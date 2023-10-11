@@ -2,13 +2,15 @@ import React from 'react';
 
 // Todo Component
 // - checkbox와 label을 렌더링하는 하나의 Todo
-export default function Todo({ item }) {
+export default function Todo({ item, deleteItem, checkHandler }) {
   const { id, title, done } = item;
 
-  const checkHandler = (e) => {
-    console.log(e.target.id);
+  const onButtonClick = () => {
+    deleteItem(id);
+  };
 
-    // (!done)
+  const toggleHandler = () => {
+    checkHandler(!done);
   };
 
   return (
@@ -17,10 +19,11 @@ export default function Todo({ item }) {
         type="checkbox"
         name={`todo${id}`}
         id={`todo${id}`}
-        onChange={checkHandler}
+        onChange={toggleHandler}
         defaultChecked={done} // 기본 체크값
       />
       <label htmlFor={`todo${id}`}>{title}</label>
+      <button onClick={onButtonClick}>DELETE</button>
     </div>
   );
 }
