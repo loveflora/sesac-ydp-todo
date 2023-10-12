@@ -1,27 +1,27 @@
-import { useState } from 'react';
-import Todo from './components/Todo';
-import AddTodo from './components/AddTodo';
+import { useState } from "react";
+import Todo from "./components/Todo";
+import AddTodo from "./components/AddTodo";
 
 function App() {
   const [todoItems, setTodoItems] = useState([
     {
       id: 1,
-      title: 'my todo1',
+      title: "my todo1",
       done: false,
     },
     {
       id: 2,
-      title: 'my todo2',
+      title: "my todo2",
       done: false,
     },
     {
       id: 3,
-      title: 'my todo3',
+      title: "my todo3",
       done: true,
     },
     {
       id: 4,
-      title: 'my todo4',
+      title: "my todo4",
       done: false,
     },
   ]);
@@ -35,7 +35,6 @@ function App() {
     };
 
     setTodoItems([...todoItems, newTodo]);
-    console.log(newItem);
   };
 
   // todoItems 상태에 특정 todo 삭제
@@ -47,11 +46,20 @@ function App() {
   };
 
   // check 토글
-  const checkHandler = (done) => {
-    // console.log(e.target.value);
-    // const newTodoItems = { ...todoItems, done: !done };
-    // setTodoItems([...]
-    console.log(done);
+  const checkHandler = (id, done) => {
+    //-- 1) 이전 상태 prevState를 받아와서 업데이트를 수행
+    setTodoItems((prevState) => {
+      return prevState.map((todo) =>
+        todo.id === id ? { ...todo, done: !done } : todo,
+      );
+    });
+
+    //-- 2)
+    // const newTodoItems = todoItems.map((todo) =>
+    //   todo.id === id ? { ...todo, done: !done } : todo,
+    // );
+
+    // setTodoItems(newTodoItems);
   };
 
   return (
