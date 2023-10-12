@@ -4,7 +4,6 @@ import React, { useState } from "react";
 // - checkbox와 label을 렌더링하는 하나의 Todo
 export default function Todo({ item, deleteItem, checkHandler }) {
   const { id, title, done } = item;
-  // const [isChecked, setIsChecked] = useState(done);
 
   const onButtonClick = () => {
     deleteItem(id);

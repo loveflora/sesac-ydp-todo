@@ -1,15 +1,16 @@
 const { Todo } = require("../models");
 
-//; GET /
-exports.main = (req, res) => {
-  res.render("index");
-};
-
 //; GET /todos
 //] read all
 exports.getTodos = async (req, res) => {
-  const result = await Todo.findAll();
-  res.render("visitor", { data: result });
+  try {
+    const result = await Todo.findAll();
+    console.log(result);
+    res.send({ data: result });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
 };
 
 //] CREATE

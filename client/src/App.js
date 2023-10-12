@@ -1,30 +1,44 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Todo from "./components/Todo";
 import AddTodo from "./components/AddTodo";
+import axios from "axios";
 
 function App() {
   const [todoItems, setTodoItems] = useState([
-    {
-      id: 1,
-      title: "my todo1",
-      done: false,
-    },
-    {
-      id: 2,
-      title: "my todo2",
-      done: false,
-    },
-    {
-      id: 3,
-      title: "my todo3",
-      done: true,
-    },
-    {
-      id: 4,
-      title: "my todo4",
-      done: false,
-    },
+    // {
+    //   id: 1,
+    //   title: "my todo1",
+    //   done: false,
+    // },
+    // {
+    //   id: 2,
+    //   title: "my todo2",
+    //   done: false,
+    // },
+    // {
+    //   id: 3,
+    //   title: "my todo3",
+    //   done: true,
+    // },
+    // {
+    //   id: 4,
+    //   title: "my todo4",
+    //   done: false,
+    // },
   ]);
+
+  useEffect(() => {
+    // 컴포넌트가 마운트되면 GET 요청을 보내어 더미 데이터를 가져옴
+    axios
+      .get("/todos")
+      .then((response) => {
+        setTodoItems(response.data.data);
+        console.log("????????");
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []); // 빈 배열을 전달하여 컴포넌트가 마운트될 때 한 번만 실행
 
   // todoItems 배열에 newItems 추가
   const addItem = (newItem) => {

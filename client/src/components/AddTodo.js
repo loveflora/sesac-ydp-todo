@@ -1,13 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import axios from "axios";
 
 export default function AddTodo({ addItem }) {
-  const [todoItem, setTodoItem] = useState({ title: '' });
+  const [todoItem, setTodoItem] = useState({ title: "" });
 
   const onButtonClick = () => {
-    addItem(todoItem);
+    axios({
+      method: "POST",
+      url: "/todo",
+    })
+      .then((res) => {
+        if (res) {
+          addItem(todoItem);
 
-    // input 초기화
-    setTodoItem({ title: '' });
+          // input 초기화
+          setTodoItem({ title: "" });
+        }
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
