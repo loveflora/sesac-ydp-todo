@@ -4,46 +4,45 @@ import AddTodo from './components/AddTodo';
 import axios from 'axios';
 
 function App() {
-  const [todoItems, setTodoItems] = useState([
-    // {
-    //   id: 1,
-    //   title: 'my todo1',
-    //   done: false,
-    // },
-    // {
-    //   id: 2,
-    //   title: 'my todo2',
-    //   done: false,
-    // },
-    // {
-    //   id: 3,
-    //   title: 'my todo3',
-    //   done: true,
-    // },
-    // {
-    //   id: 4,
-    //   title: 'my todo4',
-    //   done: false,
-    // },
-  ]);
+  console.log('환경변수 >>>', process.env.REACT_APP_DB_HOST);
+  // 환경변수 >>> http://localhost:8000
+
+  const [todoItems, setTodoItems] = useState([]);
 
   useEffect(() => {
-    // 컴포넌트가 마운트되면 GET 요청을 보내어 더미 데이터를 가져옴
-    // axios
-    // .get('/todos')
-    axios({
-      method: 'GET',
-      url: '/todos',
-    })
-      .then((response) => {
-        console.log(response);
-        console.log('!!!!');
-        // setTodoItems(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
-  }, []); // 빈 배열을 전달하여 컴포넌트가 마운트될 때 한 번만 실행
+    const getTodos = async () => {
+      const res = await axios.get(`${process.env.REACT_APP_DB_HOST}/todos`);
+      setTodoItems(res.data);
+    };
+
+    getTodos();
+  }, []);
+
+  //_ 3000(client) & 8000(server) : 포트번호 다름
+  //!!!!!! CORS Error !!!!!!!! (중요)
+  // 요청의 Origin이 8080이 아니므로 8080(BE)쪽에서 거절 (SOP 정책에 어긋남)
+  // 다른 도메인에서 요청하더라도 받아들일 수 있도록 설정해야 함 !
+  //--> CORS 미들웨어 등록하면 에러 해결됨
+
+  //) SOP (Same Origin Policy, 동일 출처 정책)
+  // 같은 origin(출처, 주소)만 데이터를 주고 받겠다
+
+  //XXX 컴포넌트가 마운트되면 GET 요청을 보내 데이터를 가져옴
+  // useEffect(() => {
+
+  //   axios({
+  //     method: 'GET',
+  //     url: '/todos',
+  //   })
+  //     .then((response) => {
+  //       console.log(response);
+  //       console.log('!!!!');
+  //       // setTodoItems(response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error fetching data:', error);
+  //     });
+  // }, []); // 빈 의존성 배열 : 전달하여 컴포넌트가 마운트될 때 한 번만 실행
 
   // todoItems 배열에 newItems 추가
   const addItem = (newItem) => {

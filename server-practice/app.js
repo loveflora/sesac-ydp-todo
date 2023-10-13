@@ -24,11 +24,12 @@ app.get('/', (req, res) => {
 });
 
 //; 라우터 분리
-const indexRouter = require('./routes'); // index 생략 가능 !
+const todoRouter = require('./routes/todo'); // index 생략 가능 !
 // indexRouter에서는 localhost:PORT/ 기본 경로 설정 !
 // const indexRouter = require('./routes/index');
 
-app.use('/', indexRouter);
+// app.use('/', indexRouter);
+app.use('/api', todoRouter);
 
 app.get('*', (req, res) => {
   res.render('404');
