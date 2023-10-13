@@ -4,7 +4,12 @@ const { Op } = require('sequelize');
 // GET /api/todos - show all todos (READ)
 exports.readTodos = async (_, res) => {
   try {
-    let todos = await Todo.findAll();
+    let todos = await Todo.findAll(
+      // title 필드를 기준으로 내림차순 정렬
+      {
+        order: [['title', 'DESC']],
+      }
+    );
     res.send(todos);
   } catch (err) {
     res.send(err);
@@ -20,8 +25,8 @@ exports.createTodo = async (req, res) => {
       done: false,
     });
     console.log(newTodo);
-    // res.send(newTodo);
-    res.end();
+    res.send(newTodo);
+    // res.end(); // 데이터 없이 응답 -> 빈 문자열
   } catch (err) {
     res.send(err);
   }
@@ -39,6 +44,8 @@ exports.updateTodo = async (req, res) => {
       {
         where: {
           id: { [Op.eq]: req.params.todoId },
+          // [Op.eq]: 3
+          // = 3
         },
       }
     );

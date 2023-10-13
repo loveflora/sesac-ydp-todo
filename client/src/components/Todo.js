@@ -2,23 +2,13 @@ import React, { useState } from 'react';
 
 // Todo Component
 // - checkbox와 label을 렌더링하는 하나의 Todo
-export default function Todo({ item, deleteItem, checkHandler }) {
+export default function Todo({ item, deleteItem, updateItem }) {
   const [todoItem, setTodoItem] = useState(item);
   const { id, title, done } = todoItem;
   const [readOnly, setReadOnly] = useState(true);
 
   const onButtonClick = () => {
     deleteItem(todoItem);
-  };
-
-  const checkBoxEventHandler = (e) => {
-    //XXX checkHandler(id, done);
-
-    const { done, ...rest } = todoItem;
-    setTodoItem({
-      done: e.target.checked,
-      ...rest,
-    });
   };
 
   // title 클릭하면 readOnly를 false로 변경 (수정 가능하도록)
@@ -53,7 +43,20 @@ export default function Todo({ item, deleteItem, checkHandler }) {
   const editKeyEventHandler = (e) => {
     if (e.key === 'Enter') {
       setReadOnly(true);
+      updateItem(todoItem); // Enter 키 누르면 저장
     }
+  };
+
+  // checkbox 상태 업데이트
+  const checkBoxEventHandler = (e) => {
+    const { done, ...rest } = todoItem;
+    const updatedItem = {
+      done: e.target.checked,
+      ...rest,
+    };
+
+    setTodoItem(updatedItem);
+    updateItem(updatedItem); // 체크박스 변경 시 저장
   };
 
   return (

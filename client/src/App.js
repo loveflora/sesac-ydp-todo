@@ -4,16 +4,18 @@ import AddTodo from './components/AddTodo';
 import axios from 'axios';
 
 function App() {
-  console.log('환경변수 >>>', process.env.REACT_APP_DB_HOST);
+  // console.log('환경변수 >>>', process.env.REACT_APP_DB_HOST);
   // 환경변수 >>> http://localhost:8000
 
   const [todoItems, setTodoItems] = useState([]);
 
+  //] 컴포넌트가 마운트되면 GET 요청을 보내 데이터를 가져옴
   useEffect(() => {
     const getTodos = async () => {
       const res = await axios.get(`${process.env.REACT_APP_DB_HOST}/todos`);
       setTodoItems(res.data);
     };
+    console.log(`${process.env.REACT_APP_DB_HOST}/todos`);
 
     getTodos();
   }, []);
@@ -27,7 +29,8 @@ function App() {
   //) SOP (Same Origin Policy, 동일 출처 정책)
   // 같은 origin(출처, 주소)만 데이터를 주고 받겠다
 
-  //XXX 컴포넌트가 마운트되면 GET 요청을 보내 데이터를 가져옴
+  //////////////////////////////////////////
+  //XXX
   // useEffect(() => {
 
   //   axios({
@@ -44,21 +47,45 @@ function App() {
   //     });
   // }, []); // 빈 의존성 배열 : 전달하여 컴포넌트가 마운트될 때 한 번만 실행
 
-  // todoItems 배열에 newItems 추가
-  const addItem = (newItem) => {
-    const newTodo = {
-      id: todoItems.length + 1,
-      title: newItem.title,
-      done: false,
-    };
+  //] todoItems 배열에 newItems 추가
+  const addItem = async (newItem) => {
+    //_ [ BEFORE : only FE ]
+    // const newTodo = {
+    //   id: todoItems.length + 1,
+    //   title: newItem.title,
+    //   done: false,
+    // };
+    // setTodoItems([...todoItems, newTodo]);
 
-    setTodoItems([...todoItems, newTodo]);
+    //_ [ AFTER : FE + BE ]
+    // newItem이 이미 객체
+    const res = await axios.post(
+      `${process.env.REACT_APP_DB_HOST}/todo`,
+      newItem
+    ); // axios.post('url', {})
+    setTodoItems([...todoItems, res.data]);
   };
 
-  // todoItems 상태에 특정 todo 삭제
-  const deleteItem = (targetItem) => {
+  //] todoItems 상태에 특정 todo 삭제
+  const deleteItem = async (targetItem) => {
+    //_ [ BEFORE : only FE ]
+    // const newTodoItems = todoItems.filter((todo) => todo.id !== targetItem.id);
+    // setTodoItems(newTodoItems);
+
+    //_ [ AFTER : FE + BE ]
+    await axios.delete(
+      `${process.env.REACT_APP_DB_HOST}/todo/${targetItem.id}`
+    );
+
     const newTodoItems = todoItems.filter((todo) => todo.id !== targetItem.id);
     setTodoItems(newTodoItems);
+  };
+
+  const updateItem = async (targetItem) => {
+    await axios.patch(
+      `${process.env.REACT_APP_DB_HOST}/todo/${targetItem.id}`,
+      targetItem
+    );
   };
 
   ///////////////////////////////////
@@ -87,7 +114,12 @@ function App() {
         2) props 데이터 (todo 객체)를 자식 컴포넌트에게 전달
       */}
       {todoItems.map((todo) => (
-        <Todo key={todo.id} item={todo} deleteItem={deleteItem} />
+        <Todo
+          key={todo.id}
+          item={todo}
+          deleteItem={deleteItem}
+          updateItem={updateItem}
+        />
       ))}
     </div>
   );
