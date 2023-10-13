@@ -1,51 +1,74 @@
-const { Todo } = require("../models");
+const { Todo } = require('../models');
+const { Op } = require('sequelize');
 
-//; GET /todos
-//] read all
-exports.getTodos = async (req, res) => {
+// GET /api/todos - show all todos (READ)
+exports.readTodos = async (_, res) => {
   try {
-    const result = await Todo.findAll();
-    console.log(result);
-    res.send({ data: result });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
+    let todos = await Todo.findAll();
+    res.send(todos);
+  } catch (err) {
+    res.send(err);
   }
 };
 
-//] CREATE
-//; POST /todo
-exports.postTodo = async (req, res) => {
-  const { id, title } = req.body;
-  const result = await Todo.create({
-    id,
-    title,
-    done: false,
-  });
-  res.send(result);
+// POST /api/todo - create a new todo (CREATE)
+exports.createTodo = async (req, res) => {
+  console.log('>>>>', req.body);
+  try {
+    let newTodo = await Todo.create({
+      title: req.body.title,
+      done: false,
+    });
+    console.log(newTodo);
+    // res.send(newTodo);
+    res.end();
+  } catch (err) {
+    res.send(err);
+  }
 };
 
-//] update
-//; UPDATE /todo/:todoId
+// PATCH /api/todo/:todoId - edit a specific todo (UPDATE)
 exports.updateTodo = async (req, res) => {
-  await Todo.update(
-    { title: req.body.title, done: req.body.done },
-    {
-      where: { id: req.body.id },
-    },
-  );
-  res.send({ isUpdated: true });
+  console.log(req.body);
+  try {
+    let [idUpdated] = await Todo.update(
+      {
+        title: req.body.title,
+        done: req.body.done,
+      },
+      {
+        where: {
+          id: { [Op.eq]: req.params.todoId },
+        },
+      }
+    );
+
+    // 수정 실패
+    if (idUpdated === 0) {
+      return res.send(false);
+    }
+    // 수정 성공
+    res.send(true);
+  } catch (err) {
+    res.send(err);
+  }
 };
 
-//] DELETE
-//; DELETE /todo/:todoId
 exports.deleteTodo = async (req, res) => {
-  console.log(req.body); // { id : xx }
-  const { id } = req.body;
-
-  const result = await Todo.destroy({
-    where: { id },
-  });
-
-  res.send(true); // '삭제 성공(true)'을 프론트로 넘김
+  try {
+    let isDeleted = await Todo.destroy({
+      where: {
+        id: { [Op.eq]: req.params.todoId },
+      },
+      raw: true,
+    });
+    // 삭제 실패
+    if (!isDeleted) {
+      return res.send(false);
+    }
+    // 삭제 성공
+    res.send(true);
+  } catch (err) {
+    res.send(err);
+  }
 };
