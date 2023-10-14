@@ -4,12 +4,9 @@ const { Op } = require('sequelize');
 // GET /api/todos - show all todos (READ)
 exports.readTodos = async (_, res) => {
   try {
-    let todos = await Todo.findAll(
-      // title 필드를 기준으로 내림차순 정렬
-      {
-        order: [['title', 'DESC']],
-      }
-    );
+    let todos = await Todo.findAll({
+      order: [['done'], ['id', 'DESC']],
+    });
     res.send(todos);
   } catch (err) {
     res.send(err);
