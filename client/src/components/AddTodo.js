@@ -13,6 +13,7 @@ export default function AddTodo({ addItem }) {
     <div className="AddTodo">
       <input
         type="text"
+        className="bg-transparent"
         placeholder="Add your new todo"
         value={todoItem.title}
         onChange={(e) => setTodoItem({ title: e.target.value })}

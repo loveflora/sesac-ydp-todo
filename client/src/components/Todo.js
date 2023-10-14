@@ -72,6 +72,7 @@ export default function Todo({ item, deleteItem, updateItem }) {
       {/* <label htmlFor={`todo${id}`}>{title}</label> */}
       <input
         type="text"
+        className="bg-transparent"
         value={todoItem.title}
         readOnly={readOnly}
         onClick={offReadOnlyMode}
