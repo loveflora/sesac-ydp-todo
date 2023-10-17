@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import AddTodo from './AddTodo.js';
-import Todo from './Todo.js';
+import { useState, useEffect } from "react";
+import axios from "axios";
+import AddTodo from "./AddTodo.js";
+import Todo from "./Todo.js";
+import Button from "./Button.js";
 
 export default function TodoList() {
   const [todoItems, setTodoItems] = useState([]);
@@ -48,7 +49,7 @@ export default function TodoList() {
     // newItem이 이미 객체
     const res = await axios.post(
       `${process.env.REACT_APP_DB_HOST}/todo`,
-      newItem
+      newItem,
     ); // axios.post('url', {})
     const updatedItems = [...todoItems, res.data];
     setTodoItems(updatedItems);
@@ -66,7 +67,7 @@ export default function TodoList() {
 
     //_ [ AFTER : FE + BE ]
     await axios.delete(
-      `${process.env.REACT_APP_DB_HOST}/todo/${targetItem.id}`
+      `${process.env.REACT_APP_DB_HOST}/todo/${targetItem.id}`,
     );
 
     const newTodoItems = todoItems.filter((todo) => todo.id !== targetItem.id);
@@ -82,11 +83,11 @@ export default function TodoList() {
     // 서버에 업데이트 요청
     await axios.patch(
       `${process.env.REACT_APP_DB_HOST}/todo/${targetItem.id}`,
-      targetItem
+      targetItem,
     );
 
     const updatedTodoItems = todoItems.map((v) =>
-      v.id === targetItem.id ? targetItem : v
+      v.id === targetItem.id ? targetItem : v,
     );
 
     // 남은 할 일 업데이트
@@ -94,36 +95,75 @@ export default function TodoList() {
     setLeftTodo(leftTodoCount);
   };
 
-  return (
-    <div className="space-y-6">
-      <div>
-        <AddTodo addItem={addItem} />
-      </div>
-      <div
-        className="mx-auto bg-stone-300 bg-opacity-60 rounded-lg p-4 w-80 h-96 overflow-auto
-        "
-      >
-        <div className=" text-stone-700 text-opacity-60 ">
-          Remaining tasks : {leftTodo}
-        </div>
-        <div className="my-3">
-          <hr />
-        </div>
+  //] 할 일 모두 체크
+  const checkAllTodos = async () => {
+    await axios.put(`${process.env.REACT_APP_DB_HOST}/todo/check`);
 
-        <div className="space-y-2">
-          {/* 
+    const checkAllTodoItems = todoItems.map((v) => {
+      return { ...v, done: true };
+    });
+
+    setTodoItems([...checkAllTodoItems]);
+
+    // 남은 할 일 업데이트
+    setLeftTodo(0);
+  };
+
+  //] 할 일 모두 미체크
+  const uncheckAllTodos = async () => {
+    await axios.put(`${process.env.REACT_APP_DB_HOST}/todo/uncheck`);
+
+    const uncheckAllTodoItems = todoItems.map((v) => {
+      return { ...v, done: false };
+    });
+
+    setTodoItems([...uncheckAllTodoItems]);
+
+    // 남은 할 일 업데이트
+    setLeftTodo(todoItems.length);
+  };
+
+  console.log(todoItems);
+
+  return (
+    <div>
+      <div className="space-y-6">
+        <div>
+          <AddTodo addItem={addItem} />
+        </div>
+        <div
+          className="mx-auto bg-stone-300 bg-opacity-60 rounded-lg p-4 w-80 h-96 overflow-auto
+        "
+        >
+          <div className=" text-stone-700 text-opacity-60 ">
+            Remaining tasks : {leftTodo}
+          </div>
+          <div className="my-3">
+            <hr />
+          </div>
+
+          <div className="space-y-2">
+            {/* 
         1) todoItems 반복
         2) props 데이터 (todo 객체)를 자식 컴포넌트에게 전달
       */}
-          {todoItems.map((todo) => (
-            <Todo
-              key={todo.id}
-              item={todo}
-              deleteItem={deleteItem}
-              updateItem={updateItem}
-            />
-          ))}
+            {todoItems.map((todo) => (
+              <Todo
+                key={todo.id}
+                item={todo}
+                deleteItem={deleteItem}
+                updateItem={updateItem}
+              />
+            ))}
+          </div>
         </div>
+      </div>
+      <div>
+        <Button
+          checkAllTodos={checkAllTodos}
+          uncheckAllTodos={uncheckAllTodos}
+          leftTodo={leftTodo}
+        />
       </div>
     </div>
   );

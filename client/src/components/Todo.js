@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 // Todo Component
 // - checkbox와 label을 렌더링하는 하나의 Todo
@@ -42,7 +42,7 @@ export default function Todo({ item, deleteItem, updateItem }) {
 
   // Enter 키 누르면, readOnly를 true로 변경
   const editKeyEventHandler = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       setReadOnly(true);
       updateItem(todoItem); // Enter 키 누르면 저장
     }
@@ -84,8 +84,8 @@ export default function Todo({ item, deleteItem, updateItem }) {
       {/* <label htmlFor={`todo${id}`}>{title}</label> */}
       <input
         type="text"
-        className={`bg-transparent focus:border-b mr-3 p-1 focus:outline-none 
-        ${done ? 'line-through  text-gray-500 text-opacity-70' : ''}`}
+        className={`bg-transparent focus:border-b mr-3 p-1 focus:outline-none truncate
+        ${done ? "line-through  text-gray-500 text-opacity-70" : ""}`}
         value={todoItem.title}
         readOnly={readOnly}
         onClick={offReadOnlyMode}
@@ -97,7 +97,7 @@ export default function Todo({ item, deleteItem, updateItem }) {
         onMouseEnter={() => setIsButtonVisible(true)}
         onMouseLeave={() => setIsButtonVisible(false)}
         className={`text-stone-600 font-bold transition-opacity duration-300 opacity-${
-          isButtonVisible ? '100' : '0'
+          isButtonVisible ? "100" : "0"
         }`}
       >
         <svg viewBox="0 0 448 512" fill="currentColor" height="1em" width="1em">
