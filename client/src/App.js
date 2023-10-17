@@ -1,8 +1,8 @@
-import Clock from "./components/Clock";
-import TodoList from "./components/TodoList";
+import Clock from './components/Clock';
+import TodoList from './components/TodoList';
 
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./styles/index.css";
+// import 'bootstrap/dist/css/bootstrap.min.css';
+import './styles/index.css';
 
 function App() {
   return (

@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import AddTodo from "./AddTodo.js";
-import Todo from "./Todo.js";
-import Button from "./Button.js";
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import AddTodo from './AddTodo.js';
+import Todo from './Todo.js';
+import Button from './Button.js';
 
 export default function TodoList() {
   const [todoItems, setTodoItems] = useState([]);
@@ -49,7 +49,7 @@ export default function TodoList() {
     // newItem이 이미 객체
     const res = await axios.post(
       `${process.env.REACT_APP_DB_HOST}/todo`,
-      newItem,
+      newItem
     ); // axios.post('url', {})
     const updatedItems = [...todoItems, res.data];
     setTodoItems(updatedItems);
@@ -67,7 +67,7 @@ export default function TodoList() {
 
     //_ [ AFTER : FE + BE ]
     await axios.delete(
-      `${process.env.REACT_APP_DB_HOST}/todo/${targetItem.id}`,
+      `${process.env.REACT_APP_DB_HOST}/todo/${targetItem.id}`
     );
 
     const newTodoItems = todoItems.filter((todo) => todo.id !== targetItem.id);
@@ -83,16 +83,19 @@ export default function TodoList() {
     // 서버에 업데이트 요청
     await axios.patch(
       `${process.env.REACT_APP_DB_HOST}/todo/${targetItem.id}`,
-      targetItem,
+      targetItem
     );
 
     const updatedTodoItems = todoItems.map((v) =>
-      v.id === targetItem.id ? targetItem : v,
+      v.id === targetItem.id ? targetItem : v
     );
+
+    setTodoItems(updatedTodoItems);
 
     // 남은 할 일 업데이트
     const leftTodoCount = updatedTodoItems.filter((v) => !v.done).length;
     setLeftTodo(leftTodoCount);
+    // getTodos();
   };
 
   //] 할 일 모두 체크
@@ -104,6 +107,8 @@ export default function TodoList() {
     });
 
     setTodoItems([...checkAllTodoItems]);
+
+    // getTodos();
 
     // 남은 할 일 업데이트
     setLeftTodo(0);
