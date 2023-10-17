@@ -21,7 +21,6 @@ export default function TodoList() {
       const leftTodoCount = res.data.filter((v) => !v.done).length;
       setLeftTodo(leftTodoCount);
     };
-    console.log(`${process.env.REACT_APP_DB_HOST}/todos`);
 
     getTodos();
   }, []); // 빈 의존성 배열 : 컴포넌트가 마운트될 때 한 번만 실행
@@ -95,40 +94,33 @@ export default function TodoList() {
     // 남은 할 일 업데이트
     const leftTodoCount = updatedTodoItems.filter((v) => !v.done).length;
     setLeftTodo(leftTodoCount);
-    // getTodos();
   };
 
-  //] 할 일 모두 체크
-  const checkAllTodos = async () => {
-    await axios.put(`${process.env.REACT_APP_DB_HOST}/todo/check`);
+  //] 모두 체크/해제 토글
+  const toggleAllTodo = async (selectAll) => {
+    // check All : true,
+    // uncheck All : false 값을 보내줌
+    await axios.put(`${process.env.REACT_APP_DB_HOST}/todos`, { selectAll });
 
     const checkAllTodoItems = todoItems.map((v) => {
-      return { ...v, done: true };
+      return { ...v, done: selectAll };
     });
 
     setTodoItems([...checkAllTodoItems]);
 
-    // getTodos();
+    // 남은 할 일 업데이트
+    selectAll ? setLeftTodo(0) : setLeftTodo(todoItems.length);
+  };
+
+  //] 모두 삭제
+  const deleteAllTodo = async () => {
+    await axios.delete(`${process.env.REACT_APP_DB_HOST}/todos`);
+
+    setTodoItems([]);
 
     // 남은 할 일 업데이트
     setLeftTodo(0);
   };
-
-  //] 할 일 모두 미체크
-  const uncheckAllTodos = async () => {
-    await axios.put(`${process.env.REACT_APP_DB_HOST}/todo/uncheck`);
-
-    const uncheckAllTodoItems = todoItems.map((v) => {
-      return { ...v, done: false };
-    });
-
-    setTodoItems([...uncheckAllTodoItems]);
-
-    // 남은 할 일 업데이트
-    setLeftTodo(todoItems.length);
-  };
-
-  console.log(todoItems);
 
   return (
     <div>
@@ -165,8 +157,8 @@ export default function TodoList() {
       </div>
       <div>
         <Button
-          checkAllTodos={checkAllTodos}
-          uncheckAllTodos={uncheckAllTodos}
+          toggleAllTodo={toggleAllTodo}
+          deleteAllTodo={deleteAllTodo}
           leftTodo={leftTodo}
         />
       </div>

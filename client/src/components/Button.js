@@ -1,21 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export default function Button({ checkAllTodos, uncheckAllTodos, leftTodo }) {
-  // const [isCheckButtonVisible, setIsCheckButtonVisible] = useState(false);
-  // const [isDeleteButtonVisible, setIsDeleteButtonVisible] = useState(false);
-  const [allChecked, setAllChecked] = useState(false);
-
+export default function Button({ toggleAllTodo, deleteAllTodo, leftTodo }) {
   const checkAllHandler = () => {
-    checkAllTodos();
-    setAllChecked(true);
+    toggleAllTodo(true);
   };
 
   const uncheckAllHandler = () => {
-    uncheckAllTodos();
-    setAllChecked(false);
+    toggleAllTodo(false);
   };
 
-  const deleteAllHandler = () => {};
+  const deleteAllHandler = () => {
+    deleteAllTodo();
+  };
 
   return (
     <div>
